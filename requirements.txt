@@ -26,4 +26,4 @@ gevent-websocket==0.10.1
 python-engineio==3.13.2
 python-socketio==4.6.0
 psycopg2-binary==2.8.6
-
+pandas
