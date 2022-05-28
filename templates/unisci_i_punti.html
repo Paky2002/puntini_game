@@ -8,30 +8,47 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="/static/style.css" rel="stylesheet" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <title>Unisci i punti</title>
   </head>
   <body>
-    <div id="particelle">
+    <div id="contaier_for_finish_game">
 
     </div>
-    <div class = "row">
-      <div class="col-3">
-        <p id="timer">00:00</p>
-      </div>
-      <div class="col-6">
-        
-      </div>
-      <div class="col-3">
-        <p id="punti">0</p>
-      </div>
+    <div id="particelle">
     </div>
-      <div class="d-flex align-items-center justify-content-center" style="width:100%;height:100vh;/* text-align: center; */">
-        
-        <svg preserveAspectRatio="xMinYMin meet"  id="svg" >
-          {% for punto in punti %}
-            <circle cx="{{punto.x * 100}}%" cy="{{punto.y * 100}}%" x = "{{punto.x * 100}}" y = "{{punto.y * 100}}" r="8" fill="white" data-click ="false"></circle>
-          {% endfor %}
-        </svg></div>
+    
+    <div class="d-flex align-items-center justify-content-center" style="width:100%;height:100vh;/* text-align: center; */">
+      
+      <svg preserveAspectRatio="xMinYMin meet"  id="svg" >
+        {% for punto in punti %}
+          <circle cx="{{punto.x * 100}}%" cy="{{punto.y * 100}}%" x = "{{punto.x * 100}}" y = "{{punto.y * 100}}" r="8" fill="white" data-click ="false"></circle>
+        {% endfor %}
+      </svg>
+    </div>
+
+    <template>
+      <div class="finish_game d-flex justify-content-center align-items-center">
+        <div>
+          <p class="text-center">PERCORSO FINITO !</p>
+          <p class="text-center">HAI TOTALIZZATO</p>
+          <p id="punti" class="text-center">0 PUNTI</p>
+          <div class="row">
+            <div class="col-xl-6 col-md-12 mb-3 col-bottone-end-game">
+              <button class="btn bottone_vuoto"><i class="bi bi-arrow-repeat"></i> RIPROVA</button>
+            </div>
+            <div class="col-xl-6 col-md-12  col-bottone-end-game">
+              <button class="btn bottone_pieno dropdown-toggle" type="button" id="menuConfigurazione" data-bs-toggle="dropdown" aria-expanded="false">CONFIGURAZIONI</button>
+              <ul class="dropdown-menu" aria-labelledby="menuConfigurazione">
+                <li><a class="dropdown-item" href="#">20 PUNTI</a></li>
+                <li><a class="dropdown-item" href="#">30 PUNTI</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+      
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -40,18 +57,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         particlesJS.load ('particelle', './static/particlesjs-config.json') 
-        let seconds = 0;
-        let minutes = 0;
-        var interval = setInterval(function(){
-          seconds += 1;
-             if (seconds == 60)
-              {
-                  seconds = 0;
-                  minutes += 1;
-              }
-
-            document.getElementById('timer').innerHTML = Math.floor (minutes/10) + minutes%10 + ' : ' + Math.floor (seconds/10) + seconds%10;
-             }, 1000);
 
         var svg_cont = document.getElementById ('svg')
 
@@ -60,7 +65,7 @@
         var last_click = null;
 
         var punti = 0;
-        var audio = new Audio('./static/audio.wav');
+        var audio = new Audio('./static/audio.mp4');
 
         var order_point_for_animation = Array ()
 
@@ -85,6 +90,9 @@
                           this.classList.add("on");
                           order_point_for_animation.push (this);
                           punti += Math.sqrt(Math.pow(x - this.getAttribute('x'), 2) + Math.pow(y - this.getAttribute('y'), 2))
+
+                          //CREO LA LINEA DA AGGIUNGERE PER IL COLLEGAMENTO DEI PUNTINI
+
                           let line = document.createElementNS(svgns, "line");
                           line.setAttribute ('x1', last_click.getAttribute ('cx'));
                           line.setAttribute ('x2', this.getAttribute('cx'));
@@ -92,11 +100,12 @@
                           line.setAttribute ('y2', this.getAttribute('cy'));
                           line.setAttribute ('class', 'line_game');
                           svg_cont.appendChild (line)
+
                           last_click = this
+
                           this.setAttribute('data-click', 'true')
                           this.setAttribute('fill', '#ecca53')
                           audio.play();
-                          document.getElementById ('punti').innerHTML = parseInt (punti);
                           if ( this.getAttribute('data-closed') == '1')
                           {
                             end_game();
@@ -108,24 +117,26 @@
             })
 
             function end_game () {
-              var i = 0;
-              let end_game = setInterval(function(){
-                    if (i == order_point_for_animation.length)
-                      {
-                          clearInterval (end_game)
-                      }
-                      order_point_for_animation[i].classList.add ('end_game_point');
-                      i += 1;
-                    }, 200);
-              
               let y = 0;
               order_line_for_animation = document.getElementsByTagName ('line')
-              let end_game_line = setInterval(function(){
-                console.log (order_line_for_animation+ ' ' + y)
-                  
-                    if (y == order_line_for_animation.length)
+              let len_line = order_line_for_animation.length;
+              let end_game_line = setInterval(function(){                  
+                    if (y == len_line)
                       {
-                          clearInterval (end_game)
+                          clearInterval (end_game_line)
+                          var end_game_screen = document.getElementsByTagName ('template')[0].content;
+                          document.getElementById ('contaier_for_finish_game').appendChild (end_game_screen);
+                          let punti_span = document.getElementById ('punti');
+                          let i = 0;
+                          let set_point_animation = setInterval(function(){ 
+                            if (i > punti)
+                            {
+                              clearInterval (set_point_animation);
+                            }
+                            punti_span.innerHTML = String(i) + ' PUNTI';
+                            i += 1;
+                          }, 8)       
+
                       }
                       let line = document.createElementNS(svgns, "line");
                       line.setAttribute ('x1', order_line_for_animation[y].getAttribute ('x1'));
@@ -135,20 +146,8 @@
                       line.setAttribute ('class', 'line_game_end');
                       svg_cont.appendChild (line)
                       y += 1;
-                    }, 300);
-              
-                  
-            }
-
-            /*var http = new XMLHttpRequest();
-            http.open("POST", "/salva_dati")
-            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            http.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-              }
-            };
-            http.send("distanza=5&tempo=6");*/
+                    }, 400);
+                  }
             
       </script>
     <!-- Option 2: Separate Popper and Bootstrap JS -->
