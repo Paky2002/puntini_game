@@ -8,16 +8,18 @@ svg
     height: 100%;
 }
 
+/* LINEA DI GIOCO */
+
 .line_game {
 stroke:#ecca53;
 stroke-width: 3;
 stroke-width: 2px;
+filter: drop-shadow(0px 0px 15px rgba(255, 255, 255, 1));
 
 /* Stroke-dasharray property */
 stroke-dasharray: 1353px;
 stroke-dashoffset: 1353px;
-animation: move 2s linear;   
-animation-fill-mode: forwards; 
+animation: move 2s linear forwards;   
 }
 
 @keyframes move {
@@ -25,19 +27,27 @@ animation-fill-mode: forwards;
     stroke-dashoffset: 0;
 }}
 
-#timer {
-    color: white;
-    font-weight: 700;
-}
-
-#punti {
-    color: white;
-    font-weight: 700;
-}
+/* PUNTI DI GIOCO */
 
 circle {
     cursor: pointer;
-    animation: shadow_on_circle 2.5s linear infinite;   
+    animation: shadow_on_circle 2.5s linear infinite, set 1.5s linear;   ;   
+}
+
+circle:hover {
+    r : 10;   
+}
+
+@keyframes set {
+    0% {
+        cx : 50%;
+        cy : 50%
+    }
+
+    50% {
+        cx : 50%;
+        cy : 50%
+    }
 }
 
 @keyframes shadow_on_circle {
@@ -46,11 +56,11 @@ circle {
     }
 
     50% {
-        filter: drop-shadow(0px 0px 10px rgba(255, 0, 0, 0.4));
+        filter: drop-shadow(0px 0px 10px #ecca53);
     }
 
     100% {
-        filter: drop-shadow(0px 0px 15px rgba(255, 255, 21, 0.9));
+        filter: drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.9));
     }
 }
 
@@ -72,6 +82,8 @@ circle {
     }
 }
 
+/* PARTICELLE */
+
 #particelle {
     height: 100%;
     width: 100%;
@@ -80,10 +92,11 @@ circle {
     pointer-events: none;
 }
 
+/* CLASSI DI FINE GIOCO ANIMAZIONE LINEE E PUNTI*/
+
 .end_game_point {
     fill : white;
     animation: bounce_end 1.5s linear;
-    r:17;
 }
 
 @keyframes bounce_end {
@@ -98,15 +111,92 @@ circle {
 
 .line_game_end {
     stroke: white;
-    stroke-width: 5;
-    stroke-width: 2px;
-    
+    stroke-width:3px;
+
     /* Stroke-dasharray property */
     stroke-dasharray: 1353px;
     stroke-dashoffset: 1353px;
-    animation: move 4s linear;   
+    animation: move 2s linear;   
     animation-fill-mode: forwards; 
+}
+
+/* DIV VITTORIA */
+
+.finish_game {
+    position: absolute;
+    top : 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    backdrop-filter: blur(15px);
+    filter: blur(0px);
+    z-index: 99;
+    animation: finish_screen 1.5s linear forwards;   
+}
+
+@keyframes finish_screen {
+    0% {
+        backdrop-filter: blur(0px);
     }
+
+    100% {
+        backdrop-filter: blur(15px);
+    }
+}
+
+.finish_game > div > p {
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.bottone_vuoto {
+    color: white;
+    width: 400px;
+    background-color: transparent;
+    border: 1px white solid;
+    font-size: 2vw;
+    font-weight: 800;
+}
+
+
+.bottone_vuoto:focus {
+    background-color:white;
+    color:#171a3f;
+}
+
+.bottone_pieno{
+    width: 400px;
+    background-color: white;
+    color: #171a3f;
+    border: 1px white solid;
+    font-size: 2vw;
+    font-weight: 800;
+}
+
+
+.bottone_pieno:active {
+    background-color:white;
+    color:#171a3f;
+}
+
+@media only screen and (max-width:767px){
+	.col-bottone-end-game {
+		text-align: center;
+	}
+
+    .bottone_pieno{
+        font-size: 20px;
+    }
+
+    .bottone_vuoto{
+        font-size: 20px;
+    }
+
+
+}
+
 
 
 
